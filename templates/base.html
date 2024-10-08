@@ -1,0 +1,34 @@
+<!--base template,可以被其他子模版继承，base template中可被修改的部分被定义为block-->
+<!--需要注意的是在子模版中默认的块重写行为是覆盖-->
+<!--如果想追加，则需要先使用{{ super() }}引入base template中的原块，再追加-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <!--设置页面的视口，自动缩放页面-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user }}'s Watchlist</title>
+    <!--url_for不仅可以接收视图函数的名称，也可也接收静态文件的端点（相对于根目录的路径）-->
+    <link rel="icon" href="{{ url_for('static', filename='OIP.jpg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
+    {% endblock %}
+</head>
+<body>
+    <h2>
+        <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/foo.jpg') }}">
+        <p>{{ user }}'s Watchlist</p>
+    </h2>
+    <!--导航栏-->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+        </ul>
+    </nav>
+    {% block content %}{% endblock %}
+    <footer>
+        <small>&copy; 2018 <a href="http://helloflask.com/book/3">HelloFlask</a></small>
+    </footer>
+</body>
+</html>

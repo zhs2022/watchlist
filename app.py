@@ -63,13 +63,29 @@ def forge():
     db.session.commit()
     click.echo('Done.')
 
+#模板上下文处理函数，使用字典来储存多个模板内都需要的变量
+#设置该函数后，模板的视图函数中就不需要再指定对应的变量
+#注意base template中的变量一定要使用模板上下文处理函数预先保存
+@app.context_processor
+def inject_user():
+    user = User.query.first()
+    return dict(user=user.name)
 
+#主页
 @app.route('/')
 def index():
-    user = User.query.first()
+    #user = User.query.first()
     movies = Movie.query.all()
 
-    return render_template('index.html', user=user, movies=movies)
+    return render_template('index.html', movies=movies)
+
+#错误页面
+@app.errorhandler(404)
+def page_not_found(e):
+    #user = User.query.first()
+    return render_template('404.html'), 404
+
+
 
 @app.route('/hello')
 def hello():
