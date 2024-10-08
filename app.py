@@ -14,7 +14,6 @@ movies = [
     {'title': 'The Pork of Music', 'year': '2012'},
 ]
 
-
 app = Flask(__name__)
 
 @app.route('/')
