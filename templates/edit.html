@@ -1,0 +1,12 @@
+{%extends 'base.html' %}
+{% block content %}
+<h3>Edit item</h3>
+<!--将表单设置为行内元素-->
+<form method="post" class="inline-form">
+    <!--由于是编辑条目，故将条目的原值实现放入输入框内-->
+    Name <input type="text" name="title" autocomplete="off" required value="{{ movie.title }}">
+    Year <input type="text" name="year" autocomplete="off" required value="{{ movie.year}}">
+    <input class="btn" type="submit" name="submit" value="Update">
+</form>
+<a class="btn" href="{{ url_for('index') }}">Cancel</a>
+{% endblock %}
