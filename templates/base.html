@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <!--设置页面的视口，自动缩放页面-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user }}'s Watchlist</title>
+    <title>{{ user.name }}'s Watchlist</title>
     <!--url_for不仅可以接收视图函数的名称，也可也接收静态文件的端点（相对于根目录的路径）-->
     <link rel="icon" href="{{ url_for('static', filename='OIP.jpg') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css">
@@ -23,7 +23,7 @@
     {% endfor %}
     <h2>
         <img alt="Avatar" class="avatar" src="{{ url_for('static', filename='images/foo.jpg') }}">
-        <p>{{ user }}'s Watchlist</p>
+        <p>{{ user.name }}'s Watchlist</p>
     </h2>
     <!--导航栏-->
     <!--根据登录状态设置不同的导航栏-->

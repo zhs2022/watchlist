@@ -105,23 +105,16 @@ def admin(username, password):
     db.session.commit() #提交数据库会话
     click.echo('Done.')
 
-#创建用户加载回调函数
-@login_manager.user_loader
-def load_user(user_id):  # 创建用户加载回调函数，接受用户 ID 作为参数
-    user = User.query.get(int(user_id))  # 用 ID 作为 User 模型的主键查询对应的用户
-    return user  # 返回用户对象
-
 #模板上下文处理函数，使用字典来储存多个模板内都需要的变量
 #设置该函数后，模板的视图函数中就不需要再指定对应的变量
 #注意base template中的变量一定要使用模板上下文处理函数预先保存
 @app.context_processor
 def inject_user():
-    #对于未登录用户，显示默认的用户名
-    if not current_user.is_authenticated:
-        return dict(user='Admin')
-    user = current_user #令user指向当前登录的用户
-    #user = User.query.first() #读取将User数据库表中的第一行记录对象
-    return dict(user=user.name) #令变量user指向上文读取对象的name属性，以便在模板中调用
+    user = User.query.first() #读取将User数据库表中的第一行记录对象
+    # 此处应令变量user指向对象user，而非传入对象user的name
+    # 因为user可能是个空对象，python对于空对象调用属性会抛出type error，但JinJa2不会，只会返回空字符串
+    # 因此无需担心JinJa2中传入空对象的问题
+    return dict(user=user)
 
 #主页
 #默认情况下，页面只能处理get请求，可以使用methods关键字修改
@@ -135,13 +128,13 @@ def index():
         year = request.form.get('year').strip()
         #验证数据
         if not title or not year or len(year) != 4 or len(title) > 60:
-            flash('Invalid input') #显示错误提示
+            flash('Invalid input.') #显示错误提示
             return redirect(url_for('index')) #重定向回到主页
         #数据合法，存入数据库
         movie = Movie(title=title, year=year) #创建记录
         db.session.add(movie)
         db.session.commit()
-        flash('Item created') #显示成功创建的提示
+        flash('Item created.') #显示成功创建的提示
         # 此处必须使用重定向，而不能直接渲染html页面
         # 后者会导致该html页面是由POST请求加载的，从而在刷新页面时，仍然发送了POST请求，导致表单重复提交
         return redirect(url_for('index')) 
@@ -159,7 +152,10 @@ def login():
             flash('Invalid input.')
             return redirect(url_for('login'))
         user = User.query.first()
-
+        #增加对数据库是否为空的判断
+        if not user:
+            flash('Error, the User Table is Empty.')
+            return redirect(url_for('index')) #重定向到主页
         #验证输入的用户名和密码和数据库中保存的是否一致
         if username == user.username and user.validate_password(password):
             login_user(user)
@@ -177,7 +173,7 @@ def login():
 @login_required #用于视图保护，未登录用户不能执行此操作
 def logout():
     logout_user() #登出用户
-    flash('Goodbye')
+    flash('Goodbye.')
     return redirect(url_for('index')) #重定向回首页
 
 #设置页面
@@ -198,7 +194,6 @@ def settings():
         return redirect(url_for('index'))
     return render_template('settings.html')
     
-
 #编辑电影条目
 @app.route('/movie/edit/<int:movie_id>', methods=['GET', 'POST'])
 @login_required #用于视图保护，未登录用户不能执行此操作
@@ -232,7 +227,6 @@ def delete(movie_id):
 def page_not_found(e):
     #user = User.query.first()
     return render_template('404.html'), 404
-
 
 @app.route('/hello')
 def hello():
