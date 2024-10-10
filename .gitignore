@@ -163,3 +163,7 @@ cython_debug/
 
 #Database
 *.db
+
+#conda_requirements
+conda_requirements.*
+*_conversion.py
