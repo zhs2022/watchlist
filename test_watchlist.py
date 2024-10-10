@@ -1,5 +1,8 @@
 import unittest
-from app import app, db, Movie, User, forge, initdb
+
+from Watchlist import app, db
+from Watchlist.models import Movie, User
+from Watchlist.commands import forge, initdb
 
 class WatchlistTestCase(unittest.TestCase):
     def setUp(self): #该方法在每个测试方法执行之前被调用
