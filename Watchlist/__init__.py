@@ -14,11 +14,11 @@ else:
 app = Flask(__name__)
 
 # 定义签名所需的密钥，加密会话数据，以确保flash函数传递的闪现消息的安全
-app.config['SECRET_KEY'] = 'dev'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY','dev')
 # os.path.dirname()将返回传入路径对应的文件或文件夹的上一级
 # 把 app.root_path 添加到 os.path.dirname() 中
 # 以便把文件定位到项目根目录
-app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(os.path.dirname(app.root_path), 'data.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(os.path.dirname(app.root_path), os.getenv('DATABASE_FILE', 'data.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
